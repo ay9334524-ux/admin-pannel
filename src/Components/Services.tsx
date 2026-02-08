@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 interface Service {
   icon: string;
@@ -30,7 +30,7 @@ const services: Service[] = [
 ];
 
 const Services = () => {
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -40,12 +40,12 @@ const Services = () => {
     },
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.4, ease: 'easeOut' },
+      transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
     },
   };
 
