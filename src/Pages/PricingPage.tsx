@@ -159,12 +159,12 @@ const PricingPage = () => {
   };
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 bg-gray-950 min-h-full">
+    <div className="p-4 lg:p-8 space-y-6 min-h-full">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Regional Pricing</h1>
-          <p className="text-gray-400 text-sm mt-1">Set service prices for different regions</p>
+          <h1 className="text-2xl font-bold text-gray-900">Regional Pricing</h1>
+          <p className="text-gray-500 text-sm mt-1">Set service prices for different regions</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -173,7 +173,7 @@ const PricingPage = () => {
             resetForm();
             setShowForm(true);
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl transition-all"
         >
           + Set Price
         </motion.button>
@@ -184,7 +184,7 @@ const PricingPage = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400"
+          className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 font-medium"
         >
           {error}
         </motion.div>
@@ -193,22 +193,22 @@ const PricingPage = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 bg-green-500/10 border border-green-500/50 rounded-lg text-green-400"
+          className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-600 font-medium"
         >
           {success}
         </motion.div>
       )}
 
       {/* Region Filter */}
-      <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-4">
-        <h2 className="text-sm font-medium text-gray-300 mb-3">Filter by Region</h2>
+      <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-lg shadow-gray-200/50">
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">Filter by Region</h2>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedRegion('')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
               selectedRegion === ''
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             All Regions
@@ -217,10 +217,10 @@ const PricingPage = () => {
             <button
               key={region._id}
               onClick={() => setSelectedRegion(region._id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 selectedRegion === region._id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               {region.name}
@@ -232,78 +232,78 @@ const PricingPage = () => {
       {/* Pricing Table */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full" />
+          <div className="animate-spin w-10 h-10 border-3 border-blue-500 border-t-transparent rounded-full" />
         </div>
       ) : (
-        <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg shadow-gray-200/50">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-900/50">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Service
                   </th>
-                  <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Region
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Base
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     GST
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Platform
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Travel
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Total
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Mechanic
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Company
                   </th>
-                  <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-4">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700/50">
+              <tbody className="divide-y divide-gray-100">
                 {pricing.map((p) => (
-                  <tr key={p._id} className="hover:bg-gray-700/20">
-                    <td className="px-4 py-3">
+                  <tr key={p._id} className="hover:bg-blue-50/50 transition-colors">
+                    <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <span>{p.serviceId?.categoryId?.icon || '🔧'}</span>
-                        <span className="font-medium text-white">{p.serviceId?.name}</span>
+                        <span className="font-semibold text-gray-900">{p.serviceId?.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-300">{p.regionId?.name}</td>
-                    <td className="px-4 py-3 text-right text-white">₹{p.basePrice}</td>
-                    <td className="px-4 py-3 text-right text-gray-300">
-                      ₹{p.gstAmount} <span className="text-xs text-gray-500">({p.gstPercent}%)</span>
+                    <td className="px-4 py-4 text-gray-700">{p.regionId?.name}</td>
+                    <td className="px-4 py-4 text-right text-gray-900 font-medium">₹{p.basePrice}</td>
+                    <td className="px-4 py-4 text-right text-gray-600">
+                      ₹{p.gstAmount} <span className="text-xs text-gray-400">({p.gstPercent}%)</span>
                     </td>
-                    <td className="px-4 py-3 text-right text-gray-300">
-                      ₹{p.platformFeeAmount} <span className="text-xs text-gray-500">({p.platformFeePercent}%)</span>
+                    <td className="px-4 py-4 text-right text-gray-600">
+                      ₹{p.platformFeeAmount} <span className="text-xs text-gray-400">({p.platformFeePercent}%)</span>
                     </td>
-                    <td className="px-4 py-3 text-right text-gray-300">₹{p.travelCharge}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-white">₹{p.totalPrice}</td>
-                    <td className="px-4 py-3 text-right text-green-400 font-medium">₹{p.mechanicEarning}</td>
-                    <td className="px-4 py-3 text-right text-blue-400 font-medium">₹{p.companyEarning}</td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-4 text-right text-gray-600">₹{p.travelCharge}</td>
+                    <td className="px-4 py-4 text-right font-bold text-gray-900">₹{p.totalPrice}</td>
+                    <td className="px-4 py-4 text-right text-emerald-600 font-semibold">₹{p.mechanicEarning}</td>
+                    <td className="px-4 py-4 text-right text-blue-600 font-semibold">₹{p.companyEarning}</td>
+                    <td className="px-4 py-4 text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleEdit(p)}
-                          className="px-2 py-1 text-xs font-medium text-gray-300 bg-gray-700 rounded hover:bg-gray-600 transition-colors"
+                          className="px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(p._id)}
-                          className="px-2 py-1 text-xs font-medium text-red-400 bg-red-500/10 rounded hover:bg-red-500/20 transition-colors"
+                          className="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
                         >
                           Delete
                         </button>
@@ -318,24 +318,27 @@ const PricingPage = () => {
       )}
 
       {pricing.length === 0 && !loading && (
-        <div className="text-center py-12 bg-gray-800/50 border border-gray-700/50 rounded-xl">
-          <p className="text-gray-400">No pricing set. Start by setting prices for services in different regions!</p>
+        <div className="text-center py-12 bg-white border border-gray-200 rounded-2xl shadow-lg shadow-gray-200/50">
+          <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">💰</span>
+          </div>
+          <p className="text-gray-500 font-medium">No pricing set. Start by setting prices for services in different regions!</p>
         </div>
       )}
 
       {/* Add/Edit Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-800 border border-gray-700 rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
           >
-            <h2 className="text-xl font-bold text-white mb-4">Set Regional Pricing</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Set Regional Pricing</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Service</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Service</label>
                   <select
                     value={formData.serviceId}
                     onChange={(e) => {
@@ -347,7 +350,7 @@ const PricingPage = () => {
                       });
                     }}
                     required
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white"
                   >
                     <option value="">Select service</option>
                     {services.map((s) => (
@@ -358,12 +361,12 @@ const PricingPage = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Region</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Region</label>
                   <select
                     value={formData.regionId}
                     onChange={(e) => setFormData({ ...formData, regionId: e.target.value })}
                     required
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white"
                   >
                     <option value="">Select region</option>
                     {regions.map((r) => (
@@ -377,87 +380,87 @@ const PricingPage = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Base Price (₹)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Base Price (₹)</label>
                   <input
                     type="number"
                     value={formData.basePrice}
                     onChange={(e) => setFormData({ ...formData, basePrice: Number(e.target.value) })}
                     required
                     min="0"
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">GST (%)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">GST (%)</label>
                   <input
                     type="number"
                     value={formData.gstPercent}
                     onChange={(e) => setFormData({ ...formData, gstPercent: Number(e.target.value) })}
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Platform Fee (%)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Platform Fee (%)</label>
                   <input
                     type="number"
                     value={formData.platformFeePercent}
                     onChange={(e) => setFormData({ ...formData, platformFeePercent: Number(e.target.value) })}
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Travel Charge (₹)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Travel Charge (₹)</label>
                   <input
                     type="number"
                     value={formData.travelCharge}
                     onChange={(e) => setFormData({ ...formData, travelCharge: Number(e.target.value) })}
                     min="0"
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white"
                   />
                 </div>
               </div>
 
               {/* Preview */}
               {preview && (
-                <div className="bg-gray-900/50 border border-gray-700/50 rounded-lg p-4 space-y-2">
-                  <h3 className="font-semibold text-white mb-3">Price Breakdown Preview</h3>
+                <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 border border-gray-200 rounded-2xl p-5 space-y-2">
+                  <h3 className="font-bold text-gray-900 mb-3">Price Breakdown Preview</h3>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Base Price</span>
-                    <span className="text-white">₹{preview.basePrice}</span>
+                    <span className="text-gray-500">Base Price</span>
+                    <span className="text-gray-900 font-medium">₹{preview.basePrice}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">GST ({preview.gstPercent}%)</span>
-                    <span className="text-white">₹{preview.gstAmount}</span>
+                    <span className="text-gray-500">GST ({preview.gstPercent}%)</span>
+                    <span className="text-gray-900 font-medium">₹{preview.gstAmount}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Platform Fee ({preview.platformFeePercent}%)</span>
-                    <span className="text-white">₹{preview.platformFeeAmount}</span>
+                    <span className="text-gray-500">Platform Fee ({preview.platformFeePercent}%)</span>
+                    <span className="text-gray-900 font-medium">₹{preview.platformFeeAmount}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Travel Charge</span>
-                    <span className="text-white">₹{preview.travelCharge}</span>
+                    <span className="text-gray-500">Travel Charge</span>
+                    <span className="text-gray-900 font-medium">₹{preview.travelCharge}</span>
                   </div>
-                  <div className="border-t border-gray-700 pt-2 mt-2">
-                    <div className="flex justify-between font-semibold">
-                      <span className="text-white">Total (User Pays)</span>
-                      <span className="text-white">₹{preview.totalPrice}</span>
+                  <div className="border-t border-gray-200 pt-3 mt-3">
+                    <div className="flex justify-between font-bold">
+                      <span className="text-gray-900">Total (User Pays)</span>
+                      <span className="text-gray-900">₹{preview.totalPrice}</span>
                     </div>
                   </div>
-                  <div className="border-t border-gray-700 pt-2 mt-2 space-y-1">
+                  <div className="border-t border-gray-200 pt-3 mt-3 space-y-1">
                     <div className="flex justify-between text-sm">
-                      <span className="text-green-400">Mechanic Earns</span>
-                      <span className="text-green-400 font-medium">₹{preview.mechanicEarning}</span>
+                      <span className="text-emerald-600 font-medium">Mechanic Earns</span>
+                      <span className="text-emerald-600 font-bold">₹{preview.mechanicEarning}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-blue-400">Company Earns</span>
-                      <span className="text-blue-400 font-medium">₹{preview.companyEarning}</span>
+                      <span className="text-blue-600 font-medium">Company Earns</span>
+                      <span className="text-blue-600 font-bold">₹{preview.companyEarning}</span>
                     </div>
                   </div>
                 </div>
@@ -470,13 +473,13 @@ const PricingPage = () => {
                     setShowForm(false);
                     resetForm();
                   }}
-                  className="flex-1 px-4 py-2 bg-gray-700 text-gray-300 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl transition-all"
                 >
                   Save Pricing
                 </button>

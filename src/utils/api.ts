@@ -223,6 +223,18 @@ export const usersApi = {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     }),
+
+  ban: (id: string, data: { banType: 'PERMANENT' | 'TEMPORARY'; reason: string; duration?: number }) =>
+    apiRequest<{ message: string; user: any }>(`/admin/users/${id}/ban`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  unban: (id: string, data?: { reason?: string }) =>
+    apiRequest<{ message: string; user: any }>(`/admin/users/${id}/unban`, {
+      method: 'POST',
+      body: JSON.stringify(data || {}),
+    }),
 };
 
 // ==================== MECHANICS API (Admin) ====================
@@ -238,6 +250,18 @@ export const mechanicsApi = {
     apiRequest<{ message: string; mechanic: any }>(`/admin/mechanics/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
+    }),
+
+  ban: (id: string, data: { banType: 'PERMANENT' | 'TEMPORARY'; reason: string; duration?: number }) =>
+    apiRequest<{ message: string; mechanic: any }>(`/admin/mechanics/${id}/ban`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  unban: (id: string, data?: { reason?: string }) =>
+    apiRequest<{ message: string; mechanic: any }>(`/admin/mechanics/${id}/unban`, {
+      method: 'POST',
+      body: JSON.stringify(data || {}),
     }),
 };
 

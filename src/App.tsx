@@ -57,8 +57,13 @@ function App() {
   if (currentPage === 'admin') {
     if (isLoading) {
       return (
-        <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-          <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full" />
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-500/30 animate-pulse">
+              <span className="text-white font-bold text-2xl">M</span>
+            </div>
+            <div className="animate-spin w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full mx-auto" />
+          </div>
         </div>
       );
     }

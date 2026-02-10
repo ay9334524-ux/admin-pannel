@@ -58,11 +58,12 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50 flex items-center justify-center p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-200/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-200/30 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-100/20 rounded-full blur-3xl" />
       </div>
 
       <motion.div
@@ -72,14 +73,14 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
         className="relative w-full max-w-md"
       >
         {/* Login Card */}
-        <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-3xl p-8 shadow-2xl shadow-gray-200/50">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl mb-4">
-              <span className="text-white font-bold text-xl">M</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-xl shadow-blue-500/30">
+              <span className="text-white font-bold text-2xl">M</span>
             </div>
-            <h1 className="text-2xl font-bold text-white">MecFinder Admin</h1>
-            <p className="text-gray-400 text-sm mt-1">Sign in to your account</p>
+            <h1 className="text-2xl font-bold text-gray-900">MecFinder Admin</h1>
+            <p className="text-gray-500 text-sm mt-1">Sign in to your dashboard</p>
           </div>
 
           {/* Error Message */}
@@ -87,7 +88,7 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm text-center"
+              className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center font-medium"
             >
               {error}
             </motion.div>
@@ -97,8 +98,8 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address
               </label>
               <input
                 type="email"
@@ -107,14 +108,14 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
-                placeholder="admin@example.com"
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white transition-all"
+                placeholder="admin@mecfinder.com"
               />
             </div>
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Password
               </label>
               <input
@@ -124,7 +125,7 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -133,13 +134,13 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
             <motion.button
               type="submit"
               disabled={loading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: 1.01, y: -2 }}
+              whileTap={{ scale: 0.99 }}
+              className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
@@ -152,10 +153,30 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
           </form>
 
           {/* Footer */}
-          <p className="text-center text-gray-500 text-sm mt-6">
-            Protected admin area
-          </p>
+          <div className="text-center mt-8 pt-6 border-t border-gray-100">
+            <p className="text-gray-400 text-sm flex items-center justify-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Protected admin area
+            </p>
+          </div>
         </div>
+
+        {/* Back to Landing */}
+        <motion.button
+          onClick={() => {
+            window.history.pushState({}, '', '/');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}
+          whileHover={{ scale: 1.02 }}
+          className="w-full mt-4 py-3 text-gray-600 font-medium hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Home
+        </motion.button>
       </motion.div>
     </div>
   );

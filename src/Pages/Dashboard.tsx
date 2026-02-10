@@ -45,7 +45,7 @@ const Dashboard = ({ admin, onLogout }: DashboardProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50/30 flex">
       {/* Sidebar */}
       <Sidebar
         activeItem={activeItem}
@@ -73,11 +73,14 @@ const Dashboard = ({ admin, onLogout }: DashboardProps) => {
 
 // Placeholder for other pages
 const PlaceholderContent = ({ title, description }: { title: string; description: string }) => (
-  <div className="p-6 flex items-center justify-center min-h-[60vh] bg-gray-950">
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-      <p className="text-gray-400">{description}</p>
-      <p className="text-gray-600 text-sm mt-4">Coming soon...</p>
+  <div className="p-6 flex items-center justify-center min-h-[60vh]">
+    <div className="text-center bg-white rounded-3xl p-12 shadow-lg shadow-gray-200/50 border border-gray-100">
+      <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <span className="text-4xl">🛠️</span>
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+      <p className="text-gray-500">{description}</p>
+      <p className="text-blue-600 text-sm mt-4 font-medium">Coming soon...</p>
     </div>
   </div>
 );
