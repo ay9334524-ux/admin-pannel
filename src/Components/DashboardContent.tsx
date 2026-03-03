@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { dashboardApi } from '../utils/api';
 
 interface StatCardProps {
   icon: string;
@@ -39,35 +41,62 @@ const StatCard = ({ icon, value, label, index, gradient, trend }: StatCardProps)
   );
 };
 
-const stats = [
-  { icon: '👥', value: '12,459', label: 'Total Users', gradient: 'from-blue-500 to-cyan-500', trend: '+12% this month' },
-  { icon: '🔧', value: '3,721', label: 'Total Mechanics', gradient: 'from-purple-500 to-pink-500', trend: '+8% this month' },
-  { icon: '📅', value: '847', label: 'Active Bookings', gradient: 'from-orange-500 to-amber-500', trend: '+23% this week' },
-  { icon: '💰', value: '₹4.2L', label: 'Total Revenue', gradient: 'from-green-500 to-emerald-500', trend: '+18% this month' },
-];
-
-const recentBookings = [
-  { id: 1, user: 'Rahul Sharma', mechanic: 'Amit Kumar', service: 'Bike Repair', status: 'Completed', time: '2 hours ago' },
-  { id: 2, user: 'Priya Singh', mechanic: 'Suresh Yadav', service: 'Car Service', status: 'In Progress', time: '3 hours ago' },
-  { id: 3, user: 'Vikram Patel', mechanic: 'Raju Verma', service: 'Tyre Change', status: 'Pending', time: '5 hours ago' },
-  { id: 4, user: 'Sneha Gupta', mechanic: 'Mohit Singh', service: 'Oil Change', status: 'Completed', time: '6 hours ago' },
-  { id: 5, user: 'Arjun Reddy', mechanic: 'Deepak Joshi', service: 'Engine Check', status: 'In Progress', time: '8 hours ago' },
-];
-
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case 'Completed':
+    case 'COMPLETED':
       return 'bg-emerald-50 text-emerald-600 border border-emerald-200';
-    case 'In Progress':
+    case 'IN_PROGRESS':
       return 'bg-amber-50 text-amber-600 border border-amber-200';
-    case 'Pending':
+    case 'PENDING':
       return 'bg-gray-100 text-gray-600 border border-gray-200';
+    case 'CANCELLED':
+      return 'bg-red-50 text-red-600 border border-red-200';
     default:
       return 'bg-gray-100 text-gray-600 border border-gray-200';
   }
 };
 
 const DashboardContent = () => {
+  const [stats, setStats] = useState<any>(null);
+  const [recentBookings, setRecentBookings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const fetchDashboardStats = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await dashboardApi.getStats();
+      setStats(response.stats || {});
+      setRecentBookings(response.recentBookings || []);
+    } catch (err: any) {
+      console.error('Error fetching dashboard stats:', err);
+      setError(err.message || 'Failed to fetch dashboard stats');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatNumber = (num: number) => {
+    if (num >= 100000) return (num / 100000).toFixed(1) + 'L';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+  };
+
+  const formatCurrency = (num: number) => {
+    return '₹' + formatNumber(num);
+  };
+
+  const statCards = stats ? [
+    { icon: '👥', value: formatNumber(stats.totalUsers || 0), label: 'Total Users', gradient: 'from-blue-500 to-cyan-500' },
+    { icon: '🔧', value: formatNumber(stats.totalMechanics || 0), label: 'Total Mechanics', gradient: 'from-purple-500 to-pink-500' },
+    { icon: '📅', value: formatNumber(stats.activeBookings || 0), label: 'Active Bookings', gradient: 'from-orange-500 to-amber-500' },
+    { icon: '💰', value: formatCurrency(stats.totalRevenue || 0), label: 'Total Revenue', gradient: 'from-green-500 to-emerald-500' },
+  ] : [];
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -81,90 +110,119 @@ const DashboardContent = () => {
         <p className="text-blue-100">Here's what's happening with your platform today.</p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <StatCard
-            key={stat.label}
-            icon={stat.icon}
-            value={stat.value}
-            label={stat.label}
-            gradient={stat.gradient}
-            trend={stat.trend}
-            index={index}
-          />
-        ))}
-      </div>
-
-      {/* Recent Bookings */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="bg-white rounded-3xl shadow-lg shadow-gray-200/50 border border-gray-100 overflow-hidden"
-      >
-        <div className="p-6 lg:p-8 border-b border-gray-100 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Recent Bookings</h2>
-            <p className="text-gray-500 text-sm mt-1">Latest booking activities</p>
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center min-h-[40vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading dashboard data...</p>
           </div>
-          <button className="px-4 py-2 text-blue-600 font-semibold hover:bg-blue-50 rounded-xl transition-colors">
-            View All
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
+          <p className="text-red-600 font-medium">⚠️ {error}</p>
+          <button
+            onClick={fetchDashboardStats}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Retry
           </button>
         </div>
+      )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50/80">
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
-                  User
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
-                  Mechanic
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
-                  Service
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
-                  Status
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
-                  Time
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {recentBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-blue-50/50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                        <span className="text-white font-semibold text-sm">{booking.user.charAt(0)}</span>
-                      </div>
-                      <span className="text-sm font-semibold text-gray-900">{booking.user}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-700">{booking.mechanic}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-600">{booking.service}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(booking.status)}`}>
-                      {booking.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-500">{booking.time}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
+      {/* Stats Grid */}
+      {!loading && !error && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {statCards.map((stat, index) => (
+              <StatCard
+                key={stat.label}
+                icon={stat.icon}
+                value={stat.value}
+                label={stat.label}
+                gradient={stat.gradient}
+                index={index}
+              />
+            ))}
+          </div>
+
+          {/* Recent Bookings */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-white rounded-3xl shadow-lg shadow-gray-200/50 border border-gray-100 overflow-hidden"
+          >
+            <div className="p-6 lg:p-8 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Recent Bookings</h2>
+                <p className="text-gray-500 text-sm mt-1">Latest booking activities</p>
+              </div>
+            </div>
+
+            {recentBookings.length === 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                <p>No recent bookings</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50/80">
+                      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
+                        User
+                      </th>
+                      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
+                        Mechanic
+                      </th>
+                      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
+                        Service
+                      </th>
+                      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
+                        Status
+                      </th>
+                      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-4">
+                        Amount
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {recentBookings.map((booking) => (
+                      <tr key={booking._id} className="hover:bg-blue-50/50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                              <span className="text-white font-semibold text-sm">{booking.userName?.charAt(0) || 'U'}</span>
+                            </div>
+                            <span className="text-sm font-semibold text-gray-900">{booking.userName || 'Unknown'}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm text-gray-700">{booking.mechanicName || 'Unknown'}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm text-gray-600">{booking.serviceNames?.join(', ') || 'N/A'}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(booking.status)}`}>
+                            {booking.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-semibold text-gray-900">₹{booking.totalPrice?.toFixed(0) || '0'}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </motion.div>
+        </>
+      )}
     </motion.div>
   );
 };

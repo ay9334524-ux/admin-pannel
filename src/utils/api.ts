@@ -39,7 +39,9 @@ const apiRequest = async <T>(
     throw new Error(data.message || 'API request failed');
   }
 
-  return data;
+  // Return data.data if it exists (backend wraps response in { success, data })
+  // Otherwise return the whole response
+  return data.data !== undefined ? data.data : data;
 };
 
 // ==================== SERVICES API ====================
@@ -278,6 +280,55 @@ export const bookingsApi = {
     apiRequest<{ message: string; booking: any }>(`/admin/bookings/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status, reason }),
+    }),
+};
+
+// ==================== COUPONS API (Admin) ====================
+export const couponsApi = {
+  getAll: (params?: { page?: number; limit?: number; status?: string; search?: string }) => {
+    const query = new URLSearchParams(params as Record<string, string>).toString();
+    return apiRequest<{ coupons: any[]; pagination: any }>(`/coupons/admin/coupons${query ? `?${query}` : ''}`);
+  },
+
+  getById: (id: string) => apiRequest<{ coupon: any }>(`/coupons/admin/coupons/${id}`),
+
+  create: (data: {
+    code: string;
+    description?: string;
+    discountType: 'FIXED' | 'PERCENTAGE';
+    discountValue: number;
+    maxUsagePerUser?: number;
+    maxTotalUsage?: number;
+    minOrderAmount?: number;
+    maxDiscountAmount?: number;
+    expiresAt: string;
+  }) =>
+    apiRequest<{ message: string; coupon: any }>('/coupons/admin/coupons', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  update: (id: string, data: Partial<{
+    description: string;
+    maxUsagePerUser: number;
+    maxTotalUsage: number;
+    minOrderAmount: number;
+    maxDiscountAmount: number;
+    isActive: boolean;
+  }>) =>
+    apiRequest<{ message: string; coupon: any }>(`/coupons/admin/coupons/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  expire: (id: string) =>
+    apiRequest<{ message: string; coupon: any }>(`/coupons/admin/coupons/${id}/expire`, {
+      method: 'PATCH',
+    }),
+
+  delete: (id: string) =>
+    apiRequest<{ message: string }>(`/coupons/admin/coupons/${id}`, {
+      method: 'DELETE',
     }),
 };
 

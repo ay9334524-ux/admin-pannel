@@ -16,8 +16,10 @@ const navItems = [
   { name: 'Regions', icon: '📍', roles: ['SUPER_ADMIN', 'ADMIN'] },
   { name: 'Pricing', icon: '💰', roles: ['SUPER_ADMIN', 'ADMIN'] },
   { name: 'Bookings', icon: '📅', roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'] },
-  { name: 'Payments', icon: '💳', roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { name: 'Coupons', icon: '🎫', roles: ['SUPER_ADMIN', 'ADMIN'] },
   { name: 'Support', icon: '🎧', roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'] },
+  { name: 'Complaints', icon: '📋', roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'] },
+  { name: 'Reviews', icon: '⭐', roles: ['SUPER_ADMIN', 'ADMIN'] },
 ];
 
 const Sidebar = ({ activeItem, onItemClick, isOpen, onClose, role = 'SUPPORT' }: SidebarProps) => {

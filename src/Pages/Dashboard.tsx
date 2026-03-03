@@ -9,6 +9,9 @@ import ServicesPage from './ServicesPage';
 import RegionsPage from './RegionsPage';
 import PricingPage from './PricingPage';
 import SupportPage from './SupportPage';
+import CouponsPage from './CouponsPage';
+import ComplaintsPage from './ComplaintsPage';
+import ReviewsPage from './ReviewsPage';
 
 interface DashboardProps {
   admin: { name: string; email: string; role: string } | null;
@@ -35,10 +38,14 @@ const Dashboard = ({ admin, onLogout }: DashboardProps) => {
         return <PricingPage />;
       case 'Bookings':
         return <BookingsPage />;
-      case 'Payments':
-        return <PlaceholderContent title="Payments" description="Track all payments" />;
+      case 'Coupons':
+        return <CouponsPage />;
       case 'Support':
         return <SupportPage />;
+      case 'Complaints':
+        return <ComplaintsPage />;
+      case 'Reviews':
+        return <ReviewsPage />;
       default:
         return <DashboardContent />;
     }

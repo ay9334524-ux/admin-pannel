@@ -8,7 +8,6 @@
     
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     
@@ -19,7 +18,7 @@
                    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                    font-src 'self' https://fonts.gstatic.com; 
                    img-src 'self' data: https: blob:; 
-                   connect-src 'self' http://localhost:* http://10.56.175.24:* http://192.168.*.*:* http://16.16.97.66:* https://*.mecfinder.com wss://*.mecfinder.com;" />
+                   connect-src 'self' http://localhost:3000 http://192.168.1.20:3000 http://10.56.175.24:3000 http://16.16.97.66:3000 https://*.mecfinder.com wss://*.mecfinder.com;" />
   </head>
   <body>
     <div id="root"></div>
