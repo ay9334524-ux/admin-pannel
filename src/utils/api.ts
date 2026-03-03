@@ -1,5 +1,5 @@
 // Use environment variable for API URL (set VITE_API_URL in .env)
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://16.16.97.66:3000/api';
 
 // Get access token from localStorage
 const getAccessToken = (): string | null => {
