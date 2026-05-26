@@ -20,6 +20,8 @@ const navItems = [
   { name: 'Support', icon: '🎧', roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'] },
   { name: 'Complaints', icon: '📋', roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'] },
   { name: 'Reviews', icon: '⭐', roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { name: 'Wallet / Payouts', icon: '🏧', roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { name: 'Banners', icon: '🖼️', roles: ['SUPER_ADMIN', 'ADMIN'] },
 ];
 
 const Sidebar = ({ activeItem, onItemClick, isOpen, onClose, role = 'SUPPORT' }: SidebarProps) => {

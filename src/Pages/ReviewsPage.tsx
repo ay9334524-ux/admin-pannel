@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Star, MessageSquare } from 'lucide-react';
+import { API_BASE } from '../utils/api';
 
 interface BookingRating {
   _id: string;
@@ -43,7 +44,7 @@ const ReviewsPage = () => {
   const [selectedRating, setSelectedRating] = useState<BookingRating | null>(null);
   const [error, setError] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const API_URL = API_BASE;
 
   const getHeaders = () => {
     const token = localStorage.getItem('accessToken');

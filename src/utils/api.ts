@@ -1,29 +1,71 @@
-// Use environment variable for API URL (set VITE_API_URL in .env)
-const API_BASE = import.meta.env.VITE_API_URL || 'http://16.16.97.66:3000/api';
+// Use environment variable for API URL (set VITE_API_URL in .env).
+// Production default: https://api.mecfinders.com/api
+const PROD = import.meta.env.PROD;
+const PROD_API = 'https://api.mecfinders.com/api';
+const DEV_API = 'http://localhost:3000/api';
+export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || (PROD ? PROD_API : DEV_API);
 
-// Get access token from localStorage
-const getAccessToken = (): string | null => {
-  return localStorage.getItem('accessToken');
+const getAccessToken = (): string | null => localStorage.getItem('accessToken');
+const getRefreshToken = (): string | null => localStorage.getItem('refreshToken');
+
+const clearSession = () => {
+  localStorage.removeItem('admin');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
 };
 
-// Common headers with JWT Bearer token
+const onSessionExpired = () => {
+  clearSession();
+  // Notify the app shell so it can render the login screen and update URL.
+  window.dispatchEvent(new CustomEvent('admin:session-expired'));
+};
+
 const getHeaders = () => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
-  
   const token = getAccessToken();
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
-  
   return headers;
 };
 
-// Generic fetch wrapper
+// In-flight refresh promise so concurrent 401s only trigger one refresh call.
+let refreshInFlight: Promise<boolean> | null = null;
+
+async function tryRefreshAccessToken(): Promise<boolean> {
+  if (refreshInFlight) return refreshInFlight;
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
+
+  refreshInFlight = (async () => {
+    try {
+      const resp = await fetch(`${API_BASE}/admin/refresh-token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      if (!resp.ok) return false;
+      const data = await resp.json();
+      if (data?.accessToken) localStorage.setItem('accessToken', data.accessToken);
+      if (data?.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+      return Boolean(data?.accessToken);
+    } catch {
+      return false;
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+
+  return refreshInFlight;
+}
+
+// Generic fetch wrapper with 401 token refresh.
 const apiRequest = async <T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  _retry = false,
 ): Promise<T> => {
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
@@ -33,15 +75,45 @@ const apiRequest = async <T>(
     },
   });
 
-  const data = await response.json();
+  // Try refresh exactly once on 401 (except for the refresh/login endpoints).
+  if (response.status === 401 && !_retry && !endpoint.includes('/admin/refresh-token') && !endpoint.includes('/admin/login')) {
+    const refreshed = await tryRefreshAccessToken();
+    if (refreshed) {
+      return apiRequest<T>(endpoint, options, true);
+    }
+    onSessionExpired();
+  }
+
+  // We rely on JSON responses; fall back to text-only error if not JSON.
+  let data: any = null;
+  try {
+    data = await response.json();
+  } catch {
+    data = null;
+  }
 
   if (!response.ok) {
-    throw new Error(data.message || 'API request failed');
+    throw new Error(data?.message || `API request failed (${response.status})`);
   }
 
   // Return data.data if it exists (backend wraps response in { success, data })
-  // Otherwise return the whole response
-  return data.data !== undefined ? data.data : data;
+  return data?.data !== undefined ? data.data : data;
+};
+
+// ==================== ADMIN AUTH API ====================
+export const adminAuthApi = {
+  login: (email: string, password: string) =>
+    apiRequest<{ accessToken: string; refreshToken: string; admin: any }>(
+      '/admin/login',
+      { method: 'POST', body: JSON.stringify({ email, password }) },
+    ),
+  logout: () => apiRequest<{ message: string }>('/admin/logout', { method: 'POST' }),
+  me: () => apiRequest<{ admin: any }>('/admin/profile'),
+};
+
+export const apiHelpers = {
+  clearSession,
+  hasSession: () => Boolean(getAccessToken() && localStorage.getItem('admin')),
 };
 
 // ==================== SERVICES API ====================
@@ -335,4 +407,73 @@ export const couponsApi = {
 // ==================== DASHBOARD API (Admin) ====================
 export const dashboardApi = {
   getStats: () => apiRequest<{ stats: any; recentBookings: any[] }>('/admin/dashboard/stats'),
+};
+
+// ==================== PAYOUT QUEUE & WALLET AUDIT ====================
+// ==================== BANNERS API (Admin) ====================
+export interface AdminBanner {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  linkUrl?: string;
+  ctaLabel?: string;
+  order: number;
+  isActive: boolean;
+  startsAt?: string;
+  endsAt?: string;
+  regionId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const bannersApi = {
+  getAll: () => apiRequest<{ banners: AdminBanner[] }>('/admin/banners'),
+  create: (data: Partial<AdminBanner>) =>
+    apiRequest<{ banner: AdminBanner; message: string }>('/admin/banners', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: Partial<AdminBanner>) =>
+    apiRequest<{ banner: AdminBanner; message: string }>(`/admin/banners/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  remove: (id: string) =>
+    apiRequest<{ message: string }>(`/admin/banners/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
+export const adminPayoutsApi = {
+  list: (params?: { status?: string; page?: number; limit?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.status != null) q.set('status', String(params.status));
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.limit != null) q.set('limit', String(params.limit));
+    const qs = q.toString();
+    return apiRequest<{ payouts: any[]; pagination: any }>(`/admin/payouts${qs ? `?${qs}` : ''}`);
+  },
+  approve: (id: string, adminNotes?: string) =>
+    apiRequest<{ payout: any; razorpayStatus: string }>(`/admin/payouts/${id}/approve`, {
+      method: 'POST',
+      body: JSON.stringify({ adminNotes: adminNotes ?? '' }),
+    }),
+  reject: (id: string, reason?: string) =>
+    apiRequest<{ payout: any }>(`/admin/payouts/${id}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason: reason ?? '' }),
+    }),
+};
+
+export const adminWalletLogsApi = {
+  list: (params?: { category?: string; mechanicId?: string; page?: number; limit?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.category) q.set('category', params.category);
+    if (params?.mechanicId) q.set('mechanicId', params.mechanicId);
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.limit != null) q.set('limit', String(params.limit));
+    const qs = q.toString();
+    return apiRequest<{ logs: any[]; pagination: any }>(`/admin/wallet/logs${qs ? `?${qs}` : ''}`);
+  },
 };

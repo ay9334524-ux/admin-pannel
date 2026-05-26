@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-
-// API Base URL from environment
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { adminAuthApi } from '../utils/api';
 
 interface LoginFormData {
   email: string;
@@ -27,21 +25,7 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
-      // Store tokens and admin info in localStorage
+      const data = await adminAuthApi.login(formData.email, formData.password);
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
       localStorage.setItem('admin', JSON.stringify(data.admin));

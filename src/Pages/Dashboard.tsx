@@ -12,10 +12,12 @@ import SupportPage from './SupportPage';
 import CouponsPage from './CouponsPage';
 import ComplaintsPage from './ComplaintsPage';
 import ReviewsPage from './ReviewsPage';
+import WalletOperationsPage from './WalletOperationsPage';
+import BannersPage from './BannersPage';
 
 interface DashboardProps {
   admin: { name: string; email: string; role: string } | null;
-  onLogout: () => void;
+  onLogout: () => void | Promise<void>;
 }
 
 const Dashboard = ({ admin, onLogout }: DashboardProps) => {
@@ -46,6 +48,10 @@ const Dashboard = ({ admin, onLogout }: DashboardProps) => {
         return <ComplaintsPage />;
       case 'Reviews':
         return <ReviewsPage />;
+      case 'Wallet / Payouts':
+        return <WalletOperationsPage />;
+      case 'Banners':
+        return <BannersPage />;
       default:
         return <DashboardContent />;
     }
@@ -77,19 +83,5 @@ const Dashboard = ({ admin, onLogout }: DashboardProps) => {
     </div>
   );
 };
-
-// Placeholder for other pages
-const PlaceholderContent = ({ title, description }: { title: string; description: string }) => (
-  <div className="p-6 flex items-center justify-center min-h-[60vh]">
-    <div className="text-center bg-white rounded-3xl p-12 shadow-lg shadow-gray-200/50 border border-gray-100">
-      <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-        <span className="text-4xl">🛠️</span>
-      </div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
-      <p className="text-gray-500">{description}</p>
-      <p className="text-blue-600 text-sm mt-4 font-medium">Coming soon...</p>
-    </div>
-  </div>
-);
 
 export default Dashboard;

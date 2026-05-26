@@ -9,6 +9,7 @@ import CallToAction from './Components/CallToAction'
 import Footer from './Components/Footer'
 import Login from './Pages/Login';
 import Dashboard from './Pages/Dashboard';
+import { adminAuthApi, apiHelpers } from './utils/api';
 
 interface Admin {
   name: string;
@@ -22,34 +23,55 @@ function App() {
   const [currentPage, setCurrentPage] = useState<'landing' | 'admin'>('landing');
 
   useEffect(() => {
-    // Check URL for admin route
     const path = window.location.pathname;
     if (path.startsWith('/admin')) {
       setCurrentPage('admin');
     }
 
-    // Check if admin is already logged in
     const storedAdmin = localStorage.getItem('admin');
     if (storedAdmin) {
-      setAdmin(JSON.parse(storedAdmin));
+      try {
+        setAdmin(JSON.parse(storedAdmin));
+      } catch {
+        apiHelpers.clearSession();
+      }
     }
     setIsLoading(false);
 
-    // Listen for URL changes
     const handlePopState = () => {
       const path = window.location.pathname;
       setCurrentPage(path.startsWith('/admin') ? 'admin' : 'landing');
     };
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+
+    // Listen for session expiry from the API layer (refresh failed / 401).
+    const handleSessionExpired = () => {
+      setAdmin(null);
+      if (window.location.pathname.startsWith('/admin')) {
+        // Stay on admin route so user sees the login screen.
+        setCurrentPage('admin');
+      }
+    };
+    window.addEventListener('admin:session-expired', handleSessionExpired);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('admin:session-expired', handleSessionExpired);
+    };
   }, []);
 
   const handleLoginSuccess = (adminData: Admin) => {
     setAdmin(adminData);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin');
+  const handleLogout = async () => {
+    // Fire-and-forget server-side revoke; clear local state regardless.
+    try {
+      await adminAuthApi.logout();
+    } catch {
+      /* ignore server errors — we still want to log out locally */
+    }
+    apiHelpers.clearSession();
     setAdmin(null);
   };
 

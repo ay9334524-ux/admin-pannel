@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { API_BASE } from '../utils/api';
 
 interface Complaint {
   _id: string;
@@ -42,7 +43,7 @@ const ComplaintsPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const API_URL = API_BASE;
 
   useEffect(() => {
     loadData();
