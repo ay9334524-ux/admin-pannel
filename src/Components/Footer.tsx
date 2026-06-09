@@ -4,17 +4,39 @@ const Footer = () => {
   const footerLinks = [
     {
       title: 'Product',
-      links: ['How it Works', 'Services', 'Pricing', 'FAQ'],
+      links: [
+        { name: 'How it Works', href: '#how-it-works' },
+        { name: 'Services', href: '#services' },
+        { name: 'Pricing', href: '#' },
+        { name: 'FAQ', href: '#' },
+      ],
     },
     {
       title: 'Company',
-      links: ['About Us', 'Careers', 'Blog', 'Press'],
+      links: [
+        { name: 'About Us', href: '#' },
+        { name: 'Careers', href: '#' },
+        { name: 'Blog', href: '#' },
+        { name: 'Press', href: '#' },
+      ],
     },
     {
       title: 'Legal',
-      links: ['Privacy Policy', 'Terms of Service', 'Refund Policy'],
+      links: [
+        { name: 'Privacy Policy', href: '/privacy-policy' },
+        { name: 'Terms of Service', href: '#' },
+        { name: 'Refund Policy', href: '#' },
+      ],
     },
   ];
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      window.history.pushState({}, '', href);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  };
 
   return (
     <footer className="bg-slate-900 text-gray-300">
@@ -33,8 +55,8 @@ const Footer = () => {
             </p>
             <div className="mt-6">
               <p className="text-sm text-gray-500 mb-2">Contact Us</p>
-              <a href="mailto:hello@mecfinder.com" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                hello@mecfinder.com
+              <a href="mailto:support@mecfinders.com" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                support@mecfinders.com
               </a>
             </div>
           </div>
@@ -45,12 +67,13 @@ const Footer = () => {
               <h4 className="text-white font-bold mb-5">{group.title}</h4>
               <ul className="space-y-3">
                 {group.links.map((link) => (
-                  <li key={link}>
+                  <li key={link.name}>
                     <a
-                      href="#"
+                      href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
                       className="text-sm text-gray-400 hover:text-white transition-colors"
                     >
-                      {link}
+                      {link.name}
                     </a>
                   </li>
                 ))}

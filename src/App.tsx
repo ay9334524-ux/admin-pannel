@@ -9,6 +9,7 @@ import CallToAction from './Components/CallToAction'
 import Footer from './Components/Footer'
 import Login from './Pages/Login';
 import Dashboard from './Pages/Dashboard';
+import PrivacyPolicy from './Pages/PrivacyPolicy';
 import { adminAuthApi, apiHelpers } from './utils/api';
 
 interface Admin {
@@ -20,11 +21,13 @@ interface Admin {
 function App() {
   const [admin, setAdmin] = useState<Admin | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState<'landing' | 'admin'>('landing');
+  const [currentPage, setCurrentPage] = useState<'landing' | 'admin' | 'privacy-policy'>('landing');
 
   useEffect(() => {
     const path = window.location.pathname;
-    if (path.startsWith('/admin')) {
+    if (path === '/privacy-policy') {
+      setCurrentPage('privacy-policy');
+    } else if (path.startsWith('/admin')) {
       setCurrentPage('admin');
     }
 
@@ -40,7 +43,13 @@ function App() {
 
     const handlePopState = () => {
       const path = window.location.pathname;
-      setCurrentPage(path.startsWith('/admin') ? 'admin' : 'landing');
+      if (path === '/privacy-policy') {
+        setCurrentPage('privacy-policy');
+      } else if (path.startsWith('/admin')) {
+        setCurrentPage('admin');
+      } else {
+        setCurrentPage('landing');
+      }
     };
     window.addEventListener('popstate', handlePopState);
 
@@ -74,6 +83,11 @@ function App() {
     apiHelpers.clearSession();
     setAdmin(null);
   };
+
+  // Privacy Policy page
+  if (currentPage === 'privacy-policy') {
+    return <PrivacyPolicy />;
+  }
 
   // Admin pages
   if (currentPage === 'admin') {

@@ -14,7 +14,7 @@ interface BookingRating {
   completedAt?: string;
   createdAt: string;
   userId: { _id: string; name: string; email: string; phoneNumber?: string; avatar?: string };
-  mechanicId: { _id: string; name: string; email: string; phoneNumber?: string; avatar?: string };
+  mechanicId: { _id: string; name: string; fullName?: string; email: string; phoneNumber?: string; phone?: string; avatar?: string };
   serviceId: { _id: string; name: string; categoryName?: string; icon?: string };
   serviceSnapshot?: { name: string; categoryName: string };
 }

@@ -42,10 +42,10 @@ const CouponsPage = () => {
   });
   const [creating, setCreating] = useState(false);
 
-  // Edit modal
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
-  const [editData, setEditData] = useState({ isActive: true });
+  // Edit modal (reserved for future use)
+  const [_showEditModal, _setShowEditModal] = useState(false);
+  const [_selectedCoupon, _setSelectedCoupon] = useState<Coupon | null>(null);
+  const [_editData, _setEditData] = useState({ isActive: true });
 
   useEffect(() => {
     fetchCoupons();
